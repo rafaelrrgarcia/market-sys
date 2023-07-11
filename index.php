@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 
-error_reporting(0);
+//error_reporting(0);
 header('Content-Type: application/json');
 
 require 'config.php';

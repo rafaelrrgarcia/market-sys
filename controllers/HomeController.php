@@ -13,10 +13,4 @@ class HomeController extends Controller
         // Default home message
         $this->printJson(['success' => true, 'response' => 'Hello World']);
     }
-
-    public function me()
-    {
-        // Token verification
-        $this->printJson(['success' => true, 'response' => $this->loggedUser]);
-    }
 }

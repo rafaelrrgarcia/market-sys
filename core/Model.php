@@ -24,4 +24,12 @@ class Model
            ];
        }
     }
+
+    protected function setReturnFields($fields, $array){
+        $dataReturn = array();
+        foreach ($fields as $field) {
+            $dataReturn[$field] = $array[$field];
+        }
+        return $dataReturn;
+    }
 }

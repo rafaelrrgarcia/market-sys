@@ -33,7 +33,7 @@ class UserController extends Controller
         $users = new User();
         $foundUser = $users->create($params);
         if($foundUser['success'])
-            $this->printJson($foundUser);
+            $this->printJson($foundUser, 201);
         else 
             $this->printErrorJson($foundUser['message'], 400);
     }

@@ -4,9 +4,9 @@ class Controller
 {
     protected $loggedUser = null;
 
-    public function printJson($dataToJson)
+    public function printJson($dataToJson, $code = 200)
     {
-        extract($dataToJson);
+        http_response_code($code);
         echo json_encode($dataToJson);
         exit;
     }
@@ -75,10 +75,5 @@ class Controller
                 }
             }
         }
-
-        // Check JWT token on Auth class. This endpoints needs valid token.
-        $verifyAuth = $this->verifyAuth();
-        if(!$verifyAuth['success'])
-            $this->printErrorJson("Invalid token", 401);
     }
 }

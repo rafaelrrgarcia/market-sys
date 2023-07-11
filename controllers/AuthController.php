@@ -19,6 +19,12 @@ class AuthController extends Controller
         }
     }
 
+    public function me()
+    {
+        // Token verification
+        $auth = new Auth();
+        $this->verifyAuth();
 
-
+        $this->printJson(['success' => isset($this->loggedUser), 'data' => $this->loggedUser]);
+    }
 }

@@ -11,7 +11,7 @@ class ProductType extends model
     public function index()
     {
         $array = array();
-        $dataReturn = array();
+        $return = array();
 
         $sql = "SELECT * FROM " . $this->tableName . " WHERE active = true";
         $sql = $this->db->prepare($sql);
@@ -19,7 +19,7 @@ class ProductType extends model
         if ($sql->rowCount() > 0) {
             $array = $sql->fetchAll();
             foreach ($array as $data) {
-                $dataReturn[] = [
+                $return[] = [
                     'id' => $data['id'],
                     'name' => $data['name'],
                     'tax' => $data['tax'],
@@ -27,13 +27,13 @@ class ProductType extends model
                 ];
             }
         } else {
-            $dataReturn = [
+            $return = [
                 'success' => false,
                 'message' => 'No types found'
             ];
         }
 
-        return $dataReturn;
+        return $return;
     }
 
     public function create($params)

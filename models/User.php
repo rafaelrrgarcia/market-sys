@@ -11,35 +11,32 @@ class User extends model
     public function index()
     {
         $array = array();
-        $dataReturn = array();
+        $return = array();
 
         $sql = "SELECT * FROM " . $this->tableName;
         $sql = $this->db->prepare($sql);
         $sql->execute();
         if ($sql->rowCount() > 0) {
+            $return['success'] = true;
             $array = $sql->fetchAll();
             foreach ($array as $data) {
-                $dataReturn[] = [
-                    'id' => $data['id'],
-                    'username' => $data['username'],
-                    'active' => $data['active'],
-                    'created_at' => $data['created_at']
-                ];
+                $return['data'][] = $this->setReturnFields(['id', 'username', 'active', 'created_at'], $data);
             }
         } else {
-            $dataReturn = [
+            $return = [
                 'success' => false,
                 'message' => 'No users found'
             ];
         }
 
-        return $dataReturn;
+        return $return;
     }
 
     public function create($params)
     {
         try {
-            $dataReturn = array();
+            $return = array();
+            $data = [];
 
             $sql = "INSERT INTO " . $this->tableName . " (username, password) VALUES (:username, :password)";
             $sql = $this->db->prepare($sql);
@@ -49,26 +46,28 @@ class User extends model
 
             if ($sql->rowCount() > 0) {
                 $array = $sql->fetch();
-                $dataReturn = [
+                $return['success'] = true;
+                $data = [
                     'id' => $this->db->lastInsertId(),
                     'username' => $params['username'],
                     'created_at' => date("Y-m-d H:i:s")
                 ];
+                $return['data'] = $data;
             } else {
                 throw new \Exception('User not created');
             }
         } catch (\Exception $e) {
             // Check if message is SQLSTATE to return the message cleaner.
-            $dataReturn = $this->checkSQLStateError($e, "Duplicated username");
+            $return = $this->checkSQLStateError($e, "Duplicated username");
         } finally {
-            return $dataReturn;
+            return $return;
         }
     }
 
     public function read($params)
     {
         $array = array();
-        $dataReturn = array();
+        $return = array();
 
         $sql = "SELECT * FROM " . $this->tableName . " WHERE id = :id";
         $sql = $this->db->prepare($sql);
@@ -76,20 +75,16 @@ class User extends model
         $sql->execute();
         if ($sql->rowCount() > 0) {
             $array = $sql->fetch();
-            $dataReturn = [
-                'id' => $array['id'],
-                'username' => $array['username'],
-                'active' => $array['active'],
-                'created_at' => $array['created_at']
-            ];
+            $return['success'] = true;
+            $return['data'] = $this->setReturnFields(['id', 'username', 'active', 'created_at'], $array);
         } else {
-            $dataReturn = [
+            $return = [
                 'success' => false,
                 'message' => 'User not found'
             ];
         }
 
-        return $dataReturn;
+        return $return;
     }
 
     public function update($params)

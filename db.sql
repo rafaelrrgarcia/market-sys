@@ -21,82 +21,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: billings; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.billings (
-    id integer NOT NULL,
-    id_user integer NOT NULL,
-    id_product integer NOT NULL,
-    id_cart integer NOT NULL,
-    amount integer DEFAULT 1 NOT NULL,
-    active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
-ALTER TABLE public.billings OWNER TO postgres;
-
---
--- Name: billings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.billings_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.billings_id_seq OWNER TO postgres;
-
---
--- Name: billings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.billings_id_seq OWNED BY public.billings.id;
-
-
---
--- Name: carts; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.carts (
-    id integer NOT NULL,
-    id_user integer NOT NULL,
-    payment_status boolean DEFAULT false NOT NULL,
-    active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
-ALTER TABLE public.carts OWNER TO postgres;
-
---
--- Name: carts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.carts_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.carts_id_seq OWNER TO postgres;
-
---
--- Name: carts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.carts_id_seq OWNED BY public.carts.id;
-
-
---
 -- Name: products; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -141,9 +65,9 @@ ALTER SEQUENCE public.products_id_seq OWNED BY public.products.id;
 CREATE TABLE public.products_types (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
-    active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone DEFAULT now() NOT NULL,
     tax real DEFAULT 0.00 NOT NULL
+    active boolean DEFAULT true NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -177,10 +101,12 @@ ALTER SEQUENCE public.products_types_id_seq OWNED BY public.products_types.id;
 
 CREATE TABLE public.sales (
     id integer NOT NULL,
-    id_cart integer NOT NULL,
+    id_user integer NOT NULL,
+    product_name character varying(255) NOT NULL,
     total_price_products real DEFAULT 0 NOT NULL,
     total_price_taxes real DEFAULT 0 NOT NULL,
     final_price real DEFAULT 0 NOT NULL,
+    quantity integer DEFAULT 1 NOT NULL,
     active boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL
 );
@@ -219,8 +145,8 @@ CREATE TABLE public.users (
     username character varying(50) NOT NULL,
     password character varying(255) NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone DEFAULT now() NOT NULL,
-    admin boolean DEFAULT false NOT NULL
+    admin boolean DEFAULT false NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -246,20 +172,6 @@ ALTER TABLE public.users_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
-
-
---
--- Name: billings id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.billings ALTER COLUMN id SET DEFAULT nextval('public.billings_id_seq'::regclass);
-
-
---
--- Name: carts id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.carts ALTER COLUMN id SET DEFAULT nextval('public.carts_id_seq'::regclass);
 
 
 --
@@ -291,22 +203,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- Data for Name: billings; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.billings (id, id_user, id_product, id_cart, amount, active, created_at) FROM stdin;
-\.
-
-
---
--- Data for Name: carts; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.carts (id, id_user, payment_status, active, created_at) FROM stdin;
-\.
-
-
---
 -- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -320,10 +216,10 @@ COPY public.products (id, name, value, id_type, active, created_at) FROM stdin;
 --
 
 COPY public.products_types (id, name, active, created_at, tax) FROM stdin;
-8	fruits	t	2023-07-09 13:51:50.101967	0
-9	food	t	2023-07-09 13:51:50.101967	0
-11	cleaning	t	2023-07-09 13:51:50.101967	0
-10	tools	t	2023-07-09 13:51:50.101967	0
+1	fruits	t	2023-07-09 13:51:50.101967	0
+2	food	t	2023-07-09 13:51:50.101967	0
+3	cleaning	t	2023-07-09 13:51:50.101967	0
+4	tools	t	2023-07-09 13:51:50.101967	0
 \.
 
 
@@ -331,7 +227,7 @@ COPY public.products_types (id, name, active, created_at, tax) FROM stdin;
 -- Data for Name: sales; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.sales (id, id_cart, total_price_products, total_price_taxes, final_price, active, created_at) FROM stdin;
+COPY public.sales (id, product_name, total_price_products, total_price_taxes, final_price, active, created_at, quantity, id_user) FROM stdin;
 \.
 
 
@@ -345,20 +241,6 @@ COPY public.users (id, username, password, active, created_at, admin) FROM stdin
 
 
 --
--- Name: billings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.billings_id_seq', 1, false);
-
-
---
--- Name: carts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.carts_id_seq', 1, false);
-
-
---
 -- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -369,7 +251,7 @@ SELECT pg_catalog.setval('public.products_id_seq', 1, true);
 -- Name: products_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.products_types_id_seq', 11, true);
+SELECT pg_catalog.setval('public.products_types_id_seq', 5, true);
 
 
 --
@@ -383,23 +265,7 @@ SELECT pg_catalog.setval('public.sales_id_seq', 1, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 20, true);
-
-
---
--- Name: billings unique_billing_id; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.billings
-    ADD CONSTRAINT unique_billing_id UNIQUE (id);
-
-
---
--- Name: carts unique_cart_id; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.carts
-    ADD CONSTRAINT unique_cart_id UNIQUE (id);
+SELECT pg_catalog.setval('public.users_id_seq', 2, true);
 
 
 --
