@@ -33,8 +33,6 @@ All the routes is in the file `core/Routes.php` separated by HTTP methods. The e
 
 -  Frontend market billing page;
 -  Unit tests with PHP Unit;
--  Product and Billing endpoints;
--  Save sale on database
 
 ### Technologies
 
