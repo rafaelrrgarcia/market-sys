@@ -207,7 +207,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.products (id, name, value, id_type, active, created_at) FROM stdin;
-1	Apple	5.29	8	t	2023-07-09 14:11:05.077088
+1	Apple	5.29	1	t	2023-07-09 14:11:05.077088
 \.
 
 

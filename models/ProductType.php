@@ -11,7 +11,8 @@ class ProductType extends model
     public function index()
     {
         $array = array();
-        $return = array();
+        $dataReturn = array();
+        $dataReturn['success'] = false;
 
         $sql = "SELECT * FROM " . $this->tableName . " WHERE active = true";
         $sql = $this->db->prepare($sql);
@@ -19,7 +20,8 @@ class ProductType extends model
         if ($sql->rowCount() > 0) {
             $array = $sql->fetchAll();
             foreach ($array as $data) {
-                $return[] = [
+                $dataReturn['success'] = true;
+                $dataReturn['data'] = [
                     'id' => $data['id'],
                     'name' => $data['name'],
                     'tax' => $data['tax'],
@@ -27,19 +29,17 @@ class ProductType extends model
                 ];
             }
         } else {
-            $return = [
-                'success' => false,
-                'message' => 'No types found'
-            ];
+            $dataReturn['message'] = 'No types found';
         }
 
-        return $return;
+        return $dataReturn;
     }
 
     public function create($params)
     {
         try {
             $dataReturn = array();
+            $dataReturn['success'] = false;
 
             $sql = "INSERT INTO " . $this->tableName . " (name, tax) VALUES (:name, :tax)";
             $sql = $this->db->prepare($sql);
@@ -49,7 +49,8 @@ class ProductType extends model
 
             if ($sql->rowCount() > 0) {
                 $array = $sql->fetch();
-                $dataReturn = [
+                $dataReturn['success'] = true;
+                $dataReturn['data'] = [
                     'id' => $this->db->lastInsertId(),
                     'name' => $params['name'],
                     'tax' => $params['tax'],
@@ -70,6 +71,7 @@ class ProductType extends model
     {
         $array = array();
         $dataReturn = array();
+        $dataReturn['success'] = false;
 
         $sql = "SELECT * FROM " . $this->tableName . " WHERE id = :id";
         $sql = $this->db->prepare($sql);
@@ -77,7 +79,8 @@ class ProductType extends model
         $sql->execute();
         if ($sql->rowCount() > 0) {
             $array = $sql->fetch();
-            $dataReturn = [
+            $dataReturn['success'] = true;
+            $dataReturn['data'] = [
                 'id' => $array['id'],
                 'name' => $array['name'],
                 'tax' => $array['tax'],

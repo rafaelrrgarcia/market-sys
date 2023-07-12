@@ -13,7 +13,7 @@ class Sale extends model
         $array = array();
         $return = array();
 
-        $sql = "SELECT * FROM " . $this->tableName;
+        $sql = "SELECT * FROM " . $this->tableName . " WHERE active = true ORDER BY created_at DESC";
         $sql = $this->db->prepare($sql);
         $sql->execute();
         if ($sql->rowCount() > 0) {
@@ -41,25 +41,25 @@ class Sale extends model
         return $return;
     }
 
-    public function create($params)
+    public function create($id_user, $sales)
     {
         try {
             $return = array();
-
+            
+            if(count($sales) <= 0) throw new \Exception('No sales found');
+            
             // Begin transaction
             $this->db->beginTransaction();
 
-            if(count($params['sales']) <= 0) throw new \Exception('No sales found');
-
-            // Foreach sales from params
-            foreach ($params['sales'] as $sale) {
+            // Foreach sales from sales
+            foreach ($sales as $sale) {
                 $sql = "INSERT INTO " . $this->tableName . " (
                         id_user, product_name, total_price_products, total_price_taxes, final_price, quantity
                     ) VALUES ( 
                         :id_user, :product_name, :total_price_products, :total_price_taxes, :final_price, :quantity
                     )";
                 $sql = $this->db->prepare($sql);
-                $sql->bindValue(':id_user', $params['id_user']);
+                $sql->bindValue(':id_user', $id_user);
                 $sql->bindValue(':product_name', $sale['product_name']);
                 $sql->bindValue(':total_price_products', $sale['total_price_products']);
                 $sql->bindValue(':total_price_taxes', $sale['total_price_taxes']);
@@ -68,12 +68,7 @@ class Sale extends model
                 $sql->execute();
             }
 
-            if ($sql->rowCount() > 0) {
-                $return['success'] = true;
-                $return['data'] = ['newSales' => $sql->rowCount()];
-            } else {
-                throw new \Exception('No sales created');
-            }
+            $return['success'] = true;
 
             // Commit transaction
             $this->db->commit();
@@ -83,8 +78,8 @@ class Sale extends model
                 // Rollback transaction
                 $this->db->rollBack();
             }
-            $this->db->rollBack();
             // Check if message is SQLSTATE to return the message cleaner.
+            $return['success'] = false;
             $return = $this->checkSQLStateError($e, "Sales error.");
         } finally {
             return $return;

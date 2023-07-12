@@ -29,8 +29,17 @@ class Core
         $contents = file_get_contents('php://input');
         $contents = json_decode($contents, true);
         if (!empty($contents)) {
-            foreach ($contents as $paramKey => $paramName) {
-                $params[$paramKey] = addslashes($paramName);
+            $params = array_merge($params, $this->recursiveArrayCheck($contents));
+        }
+        return $params;
+    }
+
+    private function recursiveArrayCheck($params){
+        foreach ($params as $key => $value) {
+            if(is_array($value)){
+                $params[$key] = $this->recursiveArrayCheck($value);
+            }else{
+                $params[$key] = addslashes($value);
             }
         }
         return $params;

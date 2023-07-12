@@ -11,36 +11,50 @@ class Product extends model
     public function index()
     {
         $array = array();
-        $dataReturn = array();
+        $return = array();
 
-        $sql = "SELECT * FROM " . $this->tableName . " WHERE active = true";
+        $sql = "SELECT 
+                    p.id,
+                    p.name as productname,
+                    p.value as productvalue,
+                    t.name as type,
+                    t.tax,
+                    (p.value * t.tax) as taxvalue,
+                    ((p.value * t.tax) + p.value) as totalvalue
+                FROM " . $this->tableName . " p
+                JOIN products_types t ON p.id_type = t.id
+                WHERE p.active = true ORDER BY p.created_at DESC";
         $sql = $this->db->prepare($sql);
         $sql->execute();
         if ($sql->rowCount() > 0) {
+            $return['success'] = true;
             $array = $sql->fetchAll();
             foreach ($array as $data) {
-                $dataReturn[] = [
-                    'id' => $data['id'],
-                    'id_type' => $data['id_type'],
-                    'name' => $data['name'],
-                    'value' => $data['value'],
-                    'created_at' => $data['created_at']
-                ];
+                $return['data'][] = $this->setReturnFields([
+                    'id',
+                    'productname',
+                    'productvalue',
+                    'type',
+                    'tax',
+                    'taxvalue',
+                    'totalvalue',
+                ], $data);
             }
         } else {
-            $dataReturn = [
+            $return = [
                 'success' => false,
-                'message' => 'No products found'
+                'message' => 'No users found'
             ];
         }
 
-        return $dataReturn;
+        return $return;
     }
 
     public function create($params)
     {
         try {
             $dataReturn = array();
+            $dataReturn['success'] = false;
 
             $sql = "INSERT INTO " . $this->tableName . " (id_type, name, value) VALUES (:id_type, :name, :value)";
             $sql = $this->db->prepare($sql);
@@ -51,7 +65,8 @@ class Product extends model
 
             if ($sql->rowCount() > 0) {
                 $array = $sql->fetch();
-                $dataReturn = [
+                $dataReturn['success'] = true;
+                $dataReturn['data'] = [
                     'id' => $this->db->lastInsertId(),
                     'id_type' => $params['id_type'],
                     'name' => $params['name'],
@@ -63,7 +78,7 @@ class Product extends model
             }
         } catch (\Exception $e) {
             // Check if message is SQLSTATE to return the message cleaner.
-            $dataReturn = $this->checkSQLStateError($e, "Error creating the new product");
+            $dataReturn['message'] = $this->checkSQLStateError($e, "Error creating the new product");
         } finally {
             return $dataReturn;
         }
@@ -73,26 +88,36 @@ class Product extends model
     {
         $array = array();
         $dataReturn = array();
+        $dataReturn['success'] = false;
 
-        $sql = "SELECT * FROM " . $this->tableName . " WHERE id = :id";
+        $sql = "SELECT 
+                    p.id,
+                    p.name as productname,
+                    p.value as productvalue,
+                    t.name as type,
+                    t.tax,
+                    (p.value * t.tax) as taxvalue,
+                    ((p.value * t.tax) + p.value) as totalvalue
+                FROM " . $this->tableName . " p
+                JOIN products_types t ON p.id_type = t.id
+                WHERE p.active = true AND p.id = :id ORDER BY p.created_at DESC";
         $sql = $this->db->prepare($sql);
         $sql->bindValue(':id', $params['id']);
         $sql->execute();
         if ($sql->rowCount() > 0) {
             $array = $sql->fetch();
-            $dataReturn = [
-                'id' => $array['id'],
-                'id_type' => $array['id_type'],
-                'name' => $array['name'],
-                'value' => $array['value'],
-                'active' => $array['active'],
-                'created_at' => $array['created_at']
-            ];
+            $dataReturn['success'] = true;
+            $dataReturn['data'] = $this->setReturnFields([
+                'id',
+                'productname',
+                'productvalue',
+                'type',
+                'tax',
+                'taxvalue',
+                'totalvalue',
+            ], $array);
         } else {
-            $dataReturn = [
-                'success' => false,
-                'message' => 'Product not found'
-            ];
+            $dataReturn['message'] = 'Product not found';
         }
 
         return $dataReturn;
@@ -102,17 +127,18 @@ class Product extends model
     {
         $dataReturn = array();
 
-        $sql = "UPDATE " . $this->tableName . " SET name = :name, tax = :tax WHERE id = :id";
+        $sql = "UPDATE " . $this->tableName . " SET name = :name, value = :value, id_type = :id_type WHERE id = :id";
         $sql = $this->db->prepare($sql);
         $sql->bindValue(':name', $params['name']);
-        $sql->bindValue(':tax', $params['tax']);
+        $sql->bindValue(':value', $params['value']);
+        $sql->bindValue(':id_type', $params['id_type']);
         $sql->bindValue(':id', $params['id']);
         $sql->execute();
 
         if ($sql->rowCount() > 0) {
-            $dataReturn = ['success' => true, 'message' => 'Product Type successfully updated'];
+            $dataReturn = ['success' => true, 'message' => 'Product successfully updated'];
         } else {
-            $dataReturn = ['success' => false, 'message' => 'Product Type not updated'];
+            $dataReturn = ['success' => false, 'message' => 'Product not updated'];
         }
 
         return $dataReturn;
