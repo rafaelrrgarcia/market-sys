@@ -29,10 +29,14 @@ Use the `Market Sys > auth > [POST] login & generate token` to login as **admin*
 
 All the routes is in the file `core/Routes.php` separated by HTTP methods. The endpoint calls the 'Class@function' with all the parameters.
 
+### Unit tests
+
+- To run the PHPUnit tests, you need to install `composer`. After that, you need to run in the root folder: `composer install phpunit`;
+- Now, you can run `./vendor/bin/phpunit --testdox tests` to run the tests.
+
 ### Work in Progress (not ready yet):
 
 -  Frontend market billing page;
--  Unit tests with PHP Unit;
 
 ### Technologies
 
@@ -40,6 +44,7 @@ All the routes is in the file `core/Routes.php` separated by HTTP methods. The e
 * PostgreSQL 15
 * ReactJS 17
 * JWT Auth
+* PHP Unit
 
 ### Developer
 
