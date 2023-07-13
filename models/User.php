@@ -12,16 +12,17 @@ class User extends model
     {
         $array = array();
         $return = array();
-
-        $sql = "SELECT * FROM " . $this->tableName;
-        $sql = $this->db->prepare($sql);
-        $sql->execute();
-        if ($sql->rowCount() > 0) {
-            $return['success'] = true;
-            $array = $sql->fetchAll();
+        $return['success'] = false;
+        
+        $getFields = ['id', 'username', 'active', 'created_at'];
+        // select from ORM
+        $sql = $this->select($getFields);
+        if ($sql['success']) {
+            $array = $sql['data'];
             foreach ($array as $data) {
-                $return['data'][] = $this->setReturnFields(['id', 'username', 'active', 'created_at'], $data);
-            }
+                $return['data'][] = $this->setReturnFields($getFields, $data);
+            } 
+            $return['success'] = true;
         } else {
             $return = [
                 'success' => false,
@@ -35,24 +36,21 @@ class User extends model
     public function create($params)
     {
         try {
-            $return = array();
-            $data = [];
+            // Create by ORM the new user
+            $sql = $this->insert([
+                'username' => $params['username'],
+                'password' => password_hash($params['password'], PASSWORD_DEFAULT)
+            ]);
 
-            $sql = "INSERT INTO " . $this->tableName . " (username, password) VALUES (:username, :password)";
-            $sql = $this->db->prepare($sql);
-            $sql->bindValue(':username', $params['username']);
-            $sql->bindValue(':password', password_hash($params['password'], PASSWORD_DEFAULT));
-            $sql->execute();
-
-            if ($sql->rowCount() > 0) {
-                $array = $sql->fetch();
-                $return['success'] = true;
-                $data = [
-                    'id' => $this->db->lastInsertId(),
-                    'username' => $params['username'],
-                    'created_at' => date("Y-m-d H:i:s")
+            if ($sql['success']) {
+                $return = [
+                    'success' => true,
+                    'data' => [
+                        'id' => $this->db->lastInsertId(),
+                        'username' => $params['username'],
+                        'created_at' => date("Y-m-d H:i:s")
+                    ]
                 ];
-                $return['data'] = $data;
             } else {
                 throw new \Exception('User not created');
             }
@@ -68,15 +66,12 @@ class User extends model
     {
         $array = array();
         $return = array();
+        $getParams = ['id', 'username', 'active', 'created_at'];
 
-        $sql = "SELECT * FROM " . $this->tableName . " WHERE id = :id";
-        $sql = $this->db->prepare($sql);
-        $sql->bindValue(':id', $params['id']);
-        $sql->execute();
-        if ($sql->rowCount() > 0) {
-            $array = $sql->fetch();
-            $return['success'] = true;
-            $return['data'] = $this->setReturnFields(['id', 'username', 'active', 'created_at'], $array);
+        // Select from ORM by id
+        $sql = $this->select($getParams, ['id = ' . $params['id']], [], [1]);
+        if ($sql['success']) {
+            $return = $sql;
         } else {
             $return = [
                 'success' => false,
@@ -87,70 +82,44 @@ class User extends model
         return $return;
     }
 
-    public function update($params)
+    public function modify($params)
     {
         $dataReturn = array();
-
-        $sql = "UPDATE " . $this->tableName . " SET password = :password WHERE id = :id";
-        $sql = $this->db->prepare($sql);
-        $sql->bindValue(':password', password_hash($params['password'], PASSWORD_DEFAULT));
-        $sql->bindValue(':id', $params['id']);
-        $sql->execute();
-
-        if ($sql->rowCount() > 0) {
+        $sql = $this->update(['password' => password_hash($params['password'], PASSWORD_DEFAULT)], ['id' => $params['id']]);
+        if ($sql['success']) {
             $dataReturn = ['success' => true, 'message' => 'User successfully updated'];
         } else {
             $dataReturn = ['success' => false, 'message' => 'User not updated'];
         }
-
         return $dataReturn;
     }
 
     public function delete($params)
     {
         $dataReturn = array();
-
-        $sql = "UPDATE " . $this->tableName . " SET active = false WHERE id = :id";
-        $sql = $this->db->prepare($sql);
-        $sql->bindValue(':id', $params['id']);
-        $sql->execute();
-
-        if ($sql->rowCount() > 0) {
-            $dataReturn = ['success' => true, 'message' => 'User successfully deleted'];
+        $sql = $this->update(['active' => 'false'], ['id' => $params['id']]);
+        if ($sql['success']) {
+            $dataReturn = ['success' => true, 'message' => 'User successfully removed'];
         } else {
-            $dataReturn = ['success' => false, 'message' => 'User not deleted'];
+            $dataReturn = ['success' => false, 'message' => 'User not removed'];
         }
-
         return $dataReturn;
     }
 
     public function getValidUserByUsername($username){
         $array = array();
         $return = array();
-
-        $sql = "SELECT * FROM " . $this->tableName . " WHERE username = :username AND active = true";
-        $sql = $this->db->prepare($sql);
-        $sql->bindValue(':username', $username);
-        $sql->execute();
-        if ($sql->rowCount() > 0) {
-            $array = $sql->fetch();
-            $return = [
-                'success' => true,
-                'data' => [
-                    'id' => $array['id'],
-                    'username' => $array['username'],
-                    'active' => $array['active'],
-                    'created_at' => $array['created_at'],
-                    'admin' => $array['admin'],
-                ]
-            ];
+        
+        // Select valid user from ORM by username
+        $sql = $this->select(['id', 'username', 'active', 'created_at', 'admin'], ["username = '".$username."'", "active = true"], [], [1]);
+        if ($sql['success']) {
+            $return = $sql;
         } else {
             $return = [
                 'success' => false,
                 'message' => 'User not found'
             ];
         }
-
         return $return;
     }
 
@@ -160,23 +129,21 @@ class User extends model
             $array = array();
             $dataReturn = array();
 
-            $sql = "SELECT * FROM " . $this->tableName . " WHERE username = :username AND active = true";
-            $sql = $this->db->prepare($sql);
-            $sql->bindValue(':username', $params['username']);
-            $sql->execute();
-            if ($sql->rowCount() > 0) {
-                $array = $sql->fetch();
-                if(!password_verify($params['password'], $array['password'])){
+            $sql = $this->select([], ["username = '".$params['username']."'", "active = true"]);
+            if ($sql['success']) {
+                $array = $sql['data'];
+                if(!password_verify($params['password'], $array[0]['password'])){
                     throw new \Exception('Invalid credentials');
                 }
 
                 $dataReturn = [
                     'success' => true,
-                    'id' => $array['id']
+                    'id' => $array[0]['id'],
+                    'admin' => $array[0]['admin']
                 ];
             } else {
                 throw new \Exception('User not found');
-            }            
+            }
         } catch (\Exception $e) {
             $dataReturn = [
                 'success' => false,

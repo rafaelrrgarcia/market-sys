@@ -49,7 +49,7 @@ class Controller
             $user = $user->getValidUserByUsername($auth['data']->username);
             if(!$user['success']) throw new Exception($user['message']);
 
-            $this->loggedUser = $user['data'];
+            $this->loggedUser = $user['data'][0];
             $return = ['success' => true];
         } catch (\Exception $e) {
             $return = ['success' => false, 'message' => $e->getMessage()];

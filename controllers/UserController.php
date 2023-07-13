@@ -53,7 +53,7 @@ class UserController extends Controller
             $this->printErrorJson($foundUser['message'], 400);
     }
 
-    public function update($params)
+    public function modify($params)
     {
         // Validations
         if (!isset($params['password']) || $params['password'] == '')
@@ -61,7 +61,7 @@ class UserController extends Controller
 
         // Model actions
         $users = new User();
-        $foundUser = $users->update($params);
+        $foundUser = $users->modify($params);
         if($foundUser['success'])
             $this->printJson($foundUser);
         else 

@@ -53,7 +53,7 @@ class ProductTypeController extends Controller
             $this->printErrorJson($foundType['message'], 400);
     }
 
-    public function update($params)
+    public function modify($params)
     {
         // Validations
         $requiredFields = ['name', 'tax'];
@@ -64,7 +64,7 @@ class ProductTypeController extends Controller
 
         // Model actions
         $productsTypes = new ProductType();
-        $foundType = $productsTypes->update($params);
+        $foundType = $productsTypes->modify($params);
         if($foundType['success'])
             $this->printJson($foundType);
         else 

@@ -123,7 +123,7 @@ class Product extends model
         return $dataReturn;
     }
 
-    public function update($params)
+    public function modify($params)
     {
         $dataReturn = array();
 

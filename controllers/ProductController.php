@@ -53,7 +53,7 @@ class ProductController extends Controller
             $this->printErrorJson($foundProduct['message'], 400);
     }
 
-    public function update($params)
+    public function modify($params)
     {
         // Validations
         $requiredFields = ['name', 'value', 'id_type'];
@@ -64,7 +64,7 @@ class ProductController extends Controller
 
         // Model actions
         $products = new Product();
-        $foundProduct = $products->update($params);
+        $foundProduct = $products->modify($params);
         if($foundProduct['success'])
             $this->printJson($foundProduct);
         else 

@@ -29,13 +29,13 @@ class Routes
             'auth' => 'AuthController@login',
             // User routes
             'users' => 'UserController@create',
-            'users/:id' => 'UserController@update',
+            'users/:id' => 'UserController@modify',
             // Product routes
             'products' => 'ProductController@create',
-            'products/:id' => 'ProductController@update',
+            'products/:id' => 'ProductController@modify',
             // Product Type routes
             'producttypes' => 'ProductTypeController@create',
-            'producttypes/:id' => 'ProductTypeController@update',
+            'producttypes/:id' => 'ProductTypeController@modify',
             // Sales routes
             'sales' => 'SaleController@create'
         ];
