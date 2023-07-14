@@ -60,6 +60,10 @@ body {
 	color: #d4d4d4;
 }
 
+.App{
+	background-color: beige;
+}
+
 .img {
 	max-width: 100%;
 	transition: all 0.3s ease-out 0s;
@@ -5315,7 +5319,7 @@ ul.minicart .cart-price .new {
 	font-size: 14px;
 	border-bottom: 2px solid #eeeeee;
 	margin-bottom: 50px;
-	padding: 0 0 20px;
+	padding: 15px;
 	transition: .3s linear;
 }
 

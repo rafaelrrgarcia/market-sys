@@ -24,7 +24,8 @@ class SaleController extends Controller
         try {
             $return = [];
             $return['success'] = false;
-            if(count($params['data']) <= 0) throw new Exception("No sales to register", 400);
+            if(count($params['products']) <= 0) throw new Exception("No sales to register", 400);
+
             
             // Instantiate Models
             $typeModel = new ProductType();
@@ -32,14 +33,11 @@ class SaleController extends Controller
 
             $billings = [];
             // Get product from database with names, values and taxes
-            foreach($params['data'] as $billing){
+            foreach($params['products'] as $billing){
                 // Get product from database with names, values and types
-                $product = $productModel->read(['id' => $billing['id_product']]);
+                $product = $productModel->read(['id' => $billing['id']]);
                 if(!$product['success']) throw new Exception($product['message'], 400);
-                $product = $product['data'];
-                // Check if product is active
-                if(!$product['active']) continue;
-
+                $product = $product['data'][0];
                 // Get taxes of the product type by id_type
                 $type = $typeModel->read(['id' => $product['id_type']]);
                 if(!$type['success']) throw new Exception($type['message'], 400);

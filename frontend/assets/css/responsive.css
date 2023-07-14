@@ -587,11 +587,6 @@
 
 /* Large devices (desktops, 992px and up) */
 @media (max-width: 991.98px) {
-	.main-menu .navbar-wrap {
-		display: none !important;
-
-	}
-
 	.mobile-menu .navigation li>a:hover {
 		color: #eaa62c;
 	}
@@ -602,11 +597,6 @@
 
 	.t-header-top-area .header-top-login ul {
 		justify-content: center;
-	}
-
-	.main-menu .navbar-wrap {
-		display: none !important;
-
 	}
 
 	.container-full-padding,
@@ -755,10 +745,6 @@
 		width: 100%;
 	}
 
-	.slider-img {
-		display: none;
-	}
-
 	.transparent-header {
 		padding: 0px 0 10px;
 		top: 0;
@@ -788,11 +774,6 @@
 
 	.released-game-item {
 		margin: 50px 0px;
-	}
-
-	.just-gamers-bg::before,
-	.just-gamers-bg::after {
-		display: none;
 	}
 
 	.cta-img {
@@ -924,11 +905,6 @@
 		font-size: 16px;
 	}
 
-	.header-four-wrap {
-		border-top: none;
-		padding: 18px 0 8px;
-	}
-
 	.header-four-wrap::before {
 		width: 28%;
 	}
@@ -953,11 +929,6 @@
 		margin: 0 auto 40px;
 	}
 
-	.third-header-bg .bg,
-	.header-bottom-bg {
-		display: none;
-	}
-
 	.third-header-bg {
 		background: #1c1f26;
 		padding: 20px 0 20px;
@@ -965,10 +936,6 @@
 
 	.third-header-bg .sticky-menu {
 		padding: 20px 0 5px;
-	}
-
-	.third-banner-img::after {
-		display: none;
 	}
 
 	.custom-container {
@@ -995,10 +962,6 @@
 	.third-about-img {
 		text-align: center !important;
 		margin-bottom: 40px;
-	}
-
-	.my-match-box-wrap>img {
-		display: none;
 	}
 
 	.my-match-box-wrap {

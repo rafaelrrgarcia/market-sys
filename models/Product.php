@@ -96,6 +96,7 @@ class Product extends model
                 $this->tableName.'.id',
                 $this->tableName.'.name as productname',
                 $this->tableName.'.value as productvalue',
+                $this->tableName.'.id_type',
                 $joinedTable.'.name as type',
                 $joinedTable.'.tax',
                 '('.$this->tableName.'.value * '.$joinedTable.'.tax) as taxvalue',

@@ -65,9 +65,9 @@ ALTER SEQUENCE public.products_id_seq OWNED BY public.products.id;
 CREATE TABLE public.products_types (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
-    tax real DEFAULT 0.00 NOT NULL
     active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    tax real DEFAULT 0.00 NOT NULL
 );
 
 
@@ -101,14 +101,13 @@ ALTER SEQUENCE public.products_types_id_seq OWNED BY public.products_types.id;
 
 CREATE TABLE public.sales (
     id integer NOT NULL,
-    id_user integer NOT NULL,
     product_name character varying(255) NOT NULL,
     total_price_products real DEFAULT 0 NOT NULL,
     total_price_taxes real DEFAULT 0 NOT NULL,
     final_price real DEFAULT 0 NOT NULL,
-    quantity integer DEFAULT 1 NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    id_user integer NOT NULL
 );
 
 
@@ -145,8 +144,8 @@ CREATE TABLE public.users (
     username character varying(50) NOT NULL,
     password character varying(255) NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    admin boolean DEFAULT false NOT NULL,
-    created_at timestamp without time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    admin boolean DEFAULT false NOT NULL
 );
 
 
@@ -207,7 +206,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.products (id, name, value, id_type, active, created_at) FROM stdin;
-1	Apple	5.29	1	t	2023-07-09 14:11:05.077088
+1	Apple	5.29	8	t	2023-07-09 14:11:05.077088
+2	Banana	5	8	t	2023-07-11 19:42:16.10582
+3	Pear	5	8	t	2023-07-11 22:12:02.187977
+4	Pineaple	5	8	t	2023-07-11 23:34:47.51956
+6	Grape	5	8	f	2023-07-11 23:36:27.176072
+5	Floor Cleaner	53.99	11	t	2023-07-11 23:35:10.590562
+8	Shampoo Whiteclean	53.99	11	t	2023-07-13 22:22:37.166816
+7	Watermelon	19	8	t	2023-07-13 22:21:50.77732
 \.
 
 
@@ -216,10 +222,12 @@ COPY public.products (id, name, value, id_type, active, created_at) FROM stdin;
 --
 
 COPY public.products_types (id, name, active, created_at, tax) FROM stdin;
-1	fruits	t	2023-07-09 13:51:50.101967	0
-2	food	t	2023-07-09 13:51:50.101967	0
-3	cleaning	t	2023-07-09 13:51:50.101967	0
-4	tools	t	2023-07-09 13:51:50.101967	0
+10	tools	t	2023-07-09 13:51:50.101967	0.1
+9	food	t	2023-07-09 13:51:50.101967	0.5
+12	automotive	t	2023-07-11 23:55:22.630533	0.7
+11	cleaning	f	2023-07-09 13:51:50.101967	0.3
+13	Electronics	t	2023-07-13 22:34:58.09153	0.7
+8	Fruits	t	2023-07-09 13:51:50.101967	0.2
 \.
 
 
@@ -227,7 +235,23 @@ COPY public.products_types (id, name, active, created_at, tax) FROM stdin;
 -- Data for Name: sales; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.sales (id, product_name, total_price_products, total_price_taxes, final_price, active, created_at, quantity, id_user) FROM stdin;
+COPY public.sales (id, product_name, total_price_products, total_price_taxes, final_price, active, created_at, id_user) FROM stdin;
+3	Apple	52.9	13.225	66.125	t	2023-07-12 01:02:15.436468	1
+5	Apple	63.48	15.87	79.35	t	2023-07-12 01:02:38.245236	1
+6	Floor Cleaner	203.96	61.188	265.148	t	2023-07-12 01:02:38.245236	1
+10	Apple	5.29	1.3225	6.6125	t	2023-07-13 20:32:40.989758	1
+11	Apple	5.29	1.3225	6.6125	t	2023-07-13 20:32:40.989758	1
+12	Apple	5.29	1.3225	6.6125	t	2023-07-13 20:32:40.989758	1
+13	Apple	5.29	1.3225	6.6125	t	2023-07-13 20:32:40.989758	1
+14	Floor Cleaner	50.99	15.297	66.287	t	2023-07-13 20:32:40.989758	1
+15	Apple	5.29	1.3225	6.6125	t	2023-07-13 20:34:53.537429	1
+16	Apple	5.29	1.3225	6.6125	t	2023-07-13 20:34:53.537429	1
+17	Apple	5.29	1.3225	6.6125	t	2023-07-13 20:34:53.537429	1
+18	Apple	5.29	1.3225	6.6125	t	2023-07-13 20:34:53.537429	1
+19	Floor Cleaner	50.99	15.297	66.287	t	2023-07-13 20:34:53.537429	1
+4	Floor Cleaner	50.99	15.297	66.287	f	2023-07-12 01:02:15.436468	1
+20	Shampoo Whiteclean	53.99	16.197	70.187	t	2023-07-13 22:51:08.130414	1
+21	Floor Cleaner	53.99	16.197	70.187	t	2023-07-13 22:51:08.130414	1
 \.
 
 
@@ -237,6 +261,7 @@ COPY public.sales (id, product_name, total_price_products, total_price_taxes, fi
 
 COPY public.users (id, username, password, active, created_at, admin) FROM stdin;
 1	admin	$2y$10$iWANtAjwRKU2a.KoRJ.qSeNw4fy7p/vNurVr4ItVZlg/dkqI/buY2	t	2023-07-09 11:51:45.557986	t
+21	rafa	$2y$10$n10ROB82rIY93RNo1REp9uUeyyP9juQit2wwUBTCr.9LBkCF0ulSS	t	2023-07-11 12:07:39.837558	f
 \.
 
 
@@ -244,28 +269,28 @@ COPY public.users (id, username, password, active, created_at, admin) FROM stdin
 -- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.products_id_seq', 1, true);
+SELECT pg_catalog.setval('public.products_id_seq', 8, true);
 
 
 --
 -- Name: products_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.products_types_id_seq', 5, true);
+SELECT pg_catalog.setval('public.products_types_id_seq', 13, true);
 
 
 --
 -- Name: sales_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.sales_id_seq', 1, false);
+SELECT pg_catalog.setval('public.sales_id_seq', 21, true);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 2, true);
+SELECT pg_catalog.setval('public.users_id_seq', 24, true);
 
 
 --

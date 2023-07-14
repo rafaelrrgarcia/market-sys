@@ -111,7 +111,7 @@
 							"urlencoded": [
 								{
 									"key": "password",
-									"value": "aaaaa",
+									"value": "1234",
 									"type": "text"
 								}
 							]
@@ -148,6 +148,169 @@
 							"path": [
 								"users",
 								"2355"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "list products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/products",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Orange",
+									"type": "text"
+								},
+								{
+									"key": "value",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "id_type",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get product",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/products/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Watermelon",
+									"type": "text"
+								},
+								{
+									"key": "value",
+									"value": "19",
+									"type": "text"
+								},
+								{
+									"key": "id_type",
+									"value": "8",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products/7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/products/6",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"6"
 							]
 						}
 					},
@@ -314,169 +477,6 @@
 			]
 		},
 		{
-			"name": "products",
-			"item": [
-				{
-					"name": "list products",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{auth_token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{url}}/products",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"products"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "register product",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{auth_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "name",
-									"value": "Orange",
-									"type": "text"
-								},
-								{
-									"key": "value",
-									"value": "5",
-									"type": "text"
-								},
-								{
-									"key": "id_type",
-									"value": "1",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/products",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"products"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get product",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{auth_token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{url}}/products/5",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"products",
-								"5"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "update product",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{auth_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "name",
-									"value": "Floor Cleaner",
-									"type": "text"
-								},
-								{
-									"key": "value",
-									"value": "50.99",
-									"type": "text"
-								},
-								{
-									"key": "id_type",
-									"value": "11",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/products/5",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"products",
-								"5"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "delete product",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{auth_token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{url}}/products/6",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"products",
-								"6"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "sales",
 			"item": [
 				{
@@ -570,13 +570,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}/sales/4",
+							"raw": "{{url}}/sales/444",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"sales",
-								"4"
+								"444"
 							]
 						}
 					},
@@ -756,7 +756,7 @@
 		},
 		{
 			"key": "auth_token",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxMjcuMC4wLjEiLCJhdWQiOiIxMjcuMC4wLjEiLCJpYXQiOjE2ODkwODkyMTksImV4cCI6MTY4OTY5NDAxOSwiaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4ifQ==.tERSRrKVD0zvmbzlXxCL/lc+co82gazc6zLpTskZKgs=",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxMjcuMC4wLjEiLCJhdWQiOiIxMjcuMC4wLjEiLCJpYXQiOjE2ODkyODk1OTIsImV4cCI6MTY4OTg5NDM5MiwiaWQiOjEsInVzZXJuYW1lIjoiYWRtaW4ifQ==.8vOJWogod41P6h2WCNhibitzeJq1VNTen0kYeBCCxEo=",
 			"type": "string"
 		}
 	]
