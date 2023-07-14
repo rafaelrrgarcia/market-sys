@@ -14,22 +14,24 @@ class ProductType extends model
         $dataReturn = array();
         $dataReturn['success'] = false;
 
-        $sql = "SELECT * FROM " . $this->tableName . " WHERE active = true";
-        $sql = $this->db->prepare($sql);
-        $sql->execute();
-        if ($sql->rowCount() > 0) {
-            $array = $sql->fetchAll();
+        // Select all types in ORM
+        $sql = $this->select([], [], ['id DESC']);
+        if ($sql['success']) {
+            $array = $sql['data'];
             foreach ($array as $data) {
-                $dataReturn['success'] = true;
-                $dataReturn['data'] = [
-                    'id' => $data['id'],
-                    'name' => $data['name'],
-                    'tax' => $data['tax'],
-                    'created_at' => $data['created_at']
-                ];
+                $dataReturn['data'][] = $this->setReturnFields([
+                    'id',
+                    'name',
+                    'tax',
+                    'created_at'
+                ], $data);
             }
+            $dataReturn['success'] = true;
         } else {
-            $dataReturn['message'] = 'No types found';
+            $dataReturn = [
+                'success' => false,
+                'message' => 'No types found'
+            ];
         }
 
         return $dataReturn;
@@ -41,14 +43,13 @@ class ProductType extends model
             $dataReturn = array();
             $dataReturn['success'] = false;
 
-            $sql = "INSERT INTO " . $this->tableName . " (name, tax) VALUES (:name, :tax)";
-            $sql = $this->db->prepare($sql);
-            $sql->bindValue(':name', $params['name']);
-            $sql->bindValue(':tax', $params['tax']);
-            $sql->execute();
+            // Insert new type in ORM
+            $sql = $this->insert([
+                'name' => $params['name'],
+                'tax' => $params['tax']
+            ]);
 
-            if ($sql->rowCount() > 0) {
-                $array = $sql->fetch();
+            if ($sql['success']) {
                 $dataReturn['success'] = true;
                 $dataReturn['data'] = [
                     'id' => $this->db->lastInsertId(),
@@ -57,7 +58,7 @@ class ProductType extends model
                     'created_at' => date("Y-m-d H:i:s")
                 ];
             } else {
-                throw new \Exception('User not created');
+                throw new \Exception('Type not created');
             }
         } catch (\Exception $e) {
             // Check if message is SQLSTATE to return the message cleaner.
@@ -73,20 +74,23 @@ class ProductType extends model
         $dataReturn = array();
         $dataReturn['success'] = false;
 
-        $sql = "SELECT * FROM " . $this->tableName . " WHERE id = :id";
-        $sql = $this->db->prepare($sql);
-        $sql->bindValue(':id', $params['id']);
-        $sql->execute();
-        if ($sql->rowCount() > 0) {
-            $array = $sql->fetch();
+        // Select type in ORM
+        $sql = $this->select(
+            [],
+            [
+                'id = ' . $params['id']
+            ]
+        );
+
+        if ($sql['success']) {
+            $array = $sql['data'];
+            $dataReturn['data'] = $this->setReturnFields([
+                'id',
+                'name',
+                'tax',
+                'created_at'
+            ], $array[0]);
             $dataReturn['success'] = true;
-            $dataReturn['data'] = [
-                'id' => $array['id'],
-                'name' => $array['name'],
-                'tax' => $array['tax'],
-                'active' => $array['active'],
-                'created_at' => $array['created_at']
-            ];
         } else {
             $dataReturn = [
                 'success' => false,
@@ -101,17 +105,18 @@ class ProductType extends model
     {
         $dataReturn = array();
 
-        $sql = "UPDATE " . $this->tableName . " SET name = :name, tax = :tax WHERE id = :id";
-        $sql = $this->db->prepare($sql);
-        $sql->bindValue(':name', $params['name']);
-        $sql->bindValue(':tax', $params['tax']);
-        $sql->bindValue(':id', $params['id']);
-        $sql->execute();
+        // Update type in ORM
+        $sql = $this->update([
+            'name' => $params['name'],
+            'tax' => $params['tax']
+        ],[
+            'id' => $params['id']
+        ]);
 
-        if ($sql->rowCount() > 0) {
-            $dataReturn = ['success' => true, 'message' => 'Product Type successfully updated'];
+        if ($sql['success']) {
+            $dataReturn = ['success' => true, 'message' => 'Type successfully updated'];
         } else {
-            $dataReturn = ['success' => false, 'message' => 'Product Type not updated'];
+            $dataReturn = ['success' => false, 'message' => 'Type not updated'];
         }
 
         return $dataReturn;
@@ -120,18 +125,12 @@ class ProductType extends model
     public function delete($params)
     {
         $dataReturn = array();
-
-        $sql = "UPDATE " . $this->tableName . " SET active = false WHERE id = :id";
-        $sql = $this->db->prepare($sql);
-        $sql->bindValue(':id', $params['id']);
-        $sql->execute();
-
-        if ($sql->rowCount() > 0) {
-            $dataReturn = ['success' => true, 'message' => 'Product Type deleted'];
+        $sql = $this->update(['active' => 'false'], ['id' => $params['id']]);
+        if ($sql['success']) {
+            $dataReturn = ['success' => true, 'message' => 'Product type successfully removed'];
         } else {
-            $dataReturn = ['success' => false, 'message' => 'Product Type not deleted'];
+            $dataReturn = ['success' => false, 'message' => 'Product type not removed'];
         }
-
         return $dataReturn;
     }
 }

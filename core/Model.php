@@ -43,7 +43,7 @@ class Model
             $sql .= implode(", ", $limit);
         }
         $sql .= ";";
-        //die($sql);
+        
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
@@ -67,6 +67,7 @@ class Model
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->execute($data);
+            $data['id'] = $this->db->lastInsertId();
             return [
                 'success' => true,
                 'data' => $this->setReturnFields(array_keys($data), $data)
@@ -115,5 +116,12 @@ class Model
             $dataReturn[$field] = $array[$field];
         }
         return $dataReturn;
+    }
+
+    public static function getTableName()
+    {
+        $class = get_called_class();
+        $model = new $class();
+        return $model->tableName;
     }
 }
