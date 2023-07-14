@@ -94,6 +94,8 @@ class Product extends model
                     p.id,
                     p.name as productname,
                     p.value as productvalue,
+                    p.active,
+                    t.id as id_type,
                     t.name as type,
                     t.tax,
                     (p.value * t.tax) as taxvalue,
@@ -111,10 +113,12 @@ class Product extends model
                 'id',
                 'productname',
                 'productvalue',
+                'id_type',
                 'type',
                 'tax',
                 'taxvalue',
                 'totalvalue',
+                'active',
             ], $array);
         } else {
             $dataReturn['message'] = 'Product not found';

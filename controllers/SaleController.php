@@ -39,27 +39,24 @@ class SaleController extends Controller
                 $product = $product['data'];
                 // Check if product is active
                 if(!$product['active']) continue;
-                
+
                 // Get taxes of the product type by id_type
                 $type = $typeModel->read(['id' => $product['id_type']]);
                 if(!$type['success']) throw new Exception($type['message'], 400);
                 $type = $type['data'];
                 // Calculate type
-                $taxValue = $type['tax'] * $product['value'];
+                $taxValue = $type['tax'] * $product['productvalue'];
                 // Calculate total value
-                $totalValue = $product['value'] + $taxValue;
+                $totalValue = $product['productvalue'] + $taxValue;
                 
                 // Create billing
                 $billings[] = [
-                    'product_name' => $product['name'],
-                    'total_price_taxes' => ($taxValue * $billing['quantity']),
-                    'total_price_products' => ($product['value'] * $billing['quantity']),
-                    'final_price' => ($totalValue * $billing['quantity']),
-                    'quantity' => $billing['quantity']
+                    'product_name' => $product['productname'],
+                    'total_price_taxes' => ($taxValue),
+                    'total_price_products' => ($product['productvalue']),
+                    'final_price' => ($totalValue)
                 ];
             }
-
-            
 
             // Save the sale
             $sales = new Sale();
