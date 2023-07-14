@@ -1,5 +1,12 @@
 {
+    "name": "rafaelrrgarcia/market-sys",
     "require-dev": {
         "phpunit/phpunit": "^9"
-    }
+    },
+    "authors": [
+        {
+            "name": "Rafael Garcia",
+            "email": "rafa.rodg@outlook.com"
+        }
+    ]
 }

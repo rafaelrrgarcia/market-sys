@@ -39,6 +39,7 @@ class Auth
             $validSignature = false;
             $validDate = false;
             $return = [];
+            $return['success'] = false;
             if(!$token || $token == ''){
                 throw new \Exception("Missing token");
             }

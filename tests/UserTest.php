@@ -12,13 +12,20 @@ spl_autoload_register(function ($class) {
     }
 });
 
-final class ProductTest extends TestCase
+final class UserTest extends TestCase
 {
     public function testTypeIsValidFromModel(): void
     {
         $this->assertEquals(
-            Product::getTableName(),
-            'products'
+            User::getTableName(),
+            'users'
         );
+    }
+
+    public function testIfUserCanLoginWithInvalidToken(): void
+    {
+        $auth = new Auth();
+        $result = $auth->verifyToken('invalidtoken.invalidtoken.invalidtoken');
+        $this->assertFalse($result['success']);
     }
 }

@@ -32,7 +32,7 @@ All the routes is in the file `core/Routes.php` separated by HTTP methods. The e
 ### Unit tests
 
 - To run the PHPUnit tests, you need to install `composer`. After that, you need to run in the root folder: `composer install phpunit`;
-- Now, you can run `./vendor/bin/phpunit --testdox tests` to run the tests.
+- Now, you can run `./vendor/bin/phpunit --verbose tests` to run the tests.
 
 ### Work in Progress (not ready yet):
 

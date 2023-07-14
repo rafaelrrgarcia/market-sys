@@ -12,13 +12,13 @@ spl_autoload_register(function ($class) {
     }
 });
 
-final class ProductTest extends TestCase
+final class SaleTest extends TestCase
 {
     public function testTypeIsValidFromModel(): void
     {
         $this->assertEquals(
-            Product::getTableName(),
-            'products'
+            Sale::getTableName(),
+            'sales'
         );
     }
 }
